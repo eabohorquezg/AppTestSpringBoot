@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `Families`.`Person` (
   `firstName` VARCHAR(45) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
   `birthdate` DATE NOT NULL,
+  `role` varchar(255) DEFAULT NULL, 
   `gender` CHAR(1) NOT NULL,
   `familyId` INT NOT NULL,
   PRIMARY KEY (`personId`),

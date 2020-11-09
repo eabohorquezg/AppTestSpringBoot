@@ -6,8 +6,12 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import co.com.nxs.dto.PersonDTO;
+import co.com.nxs.model.Family;
 import co.com.nxs.model.Person;
 import co.com.nxs.repository.PersonRepository;
+import co.com.nxs.service.FamilyService;
 import co.com.nxs.service.PersonService;
 
 @Service
@@ -15,6 +19,9 @@ public class PersonServiceImpl implements PersonService{
 
 	@Autowired
 	PersonRepository personRepository;
+	
+	@Autowired
+	FamilyService familyService;
 	
 	@Override
 	public List<Person> getAllPersons() {
@@ -37,6 +44,18 @@ public class PersonServiceImpl implements PersonService{
 	@Override
 	public void deletePerson(Person person) {
 		 personRepository.delete(person);
+	}
+
+	@Override
+	public void createPerson(PersonDTO persondto) {
+		Family family = familyService.create(persondto.getFamilyNucleus().getFamily());
+		Person person = persondto.getPerson();			 
+		person.setFamily(family);  
+		create(person); 
+		for (Person parent : persondto.getFamilyNucleus().getPersons()) {
+			parent.setFamily(family); 
+			create(parent);   
+		} 		  
 	}
 
 }

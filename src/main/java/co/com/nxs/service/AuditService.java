@@ -15,4 +15,10 @@ public interface AuditService {
 	
 	public Optional<Audit> getAuditById(Long id); 
 	
+	public void startRecord(Audit audit, String message);
+	
+	public void endRecord(Audit audit, String message);
+	
+	public void exceptionRecord(Audit audit, String message);
+	
 }

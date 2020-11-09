@@ -1,6 +1,7 @@
 package co.com.nxs.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +37,28 @@ public class AuditServiceImpl implements AuditService{
 	@Override
 	public Optional<Audit> getAuditById(Long id) {
 		return auditRepository.findById(id);
+	}
+
+	@Override
+	public void startRecord(Audit audit, String message) {		
+		audit.setStartDate(new Date());
+		audit.setInput(message);   		
+		create(audit); 		
+	}
+
+	@Override 
+	public void endRecord(Audit audit, String message) {
+		audit.setEndDate(new Date());  
+		audit.setOutput(message);
+		audit.setResponseCodeHttp("200");			
+		create(audit);
+	}
+
+	@Override
+	public void exceptionRecord(Audit audit, String message) {
+		audit.setException(message);
+		audit.setResponseCodeHttp("500");
+		create(audit);
 	}	
 	
 }

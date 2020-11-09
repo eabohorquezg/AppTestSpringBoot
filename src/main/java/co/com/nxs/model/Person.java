@@ -2,42 +2,45 @@ package co.com.nxs.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Entity
 public class Person implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
-	
-	@Id
+	private static final long serialVersionUID = 1L; 
+	 
+	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)		
-	private Long personId;
-	
-	private String firstName;
-	
-	private String lastName; 
-	
+	private Long personId;	
+	private String firstName;	 
+	private String lastName; 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-	private Date birthdate; 
-	
-	private char gender; 
-	
-	@ManyToOne(cascade = CascadeType.ALL)		
-	private Family family; 	 
+	private Date birthdate; 	
+	private char gender; 	
+	private String role;	
+	@ManyToOne(fetch = FetchType.LAZY)	
+	@JoinColumn(name = "family_id")
+	private Family family;
+
+	public Person() {
+		super();
+	}
 
 	public Long getPersonId() {
 		return personId;
 	}
 
 	public void setPersonId(Long personId) {
-		this.personId = personId; 
+		this.personId = personId;
 	}
 
 	public String getFirstName() {
@@ -72,6 +75,14 @@ public class Person implements Serializable {
 		this.gender = gender;
 	}
 
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
 	public Family getFamily() {
 		return family;
 	}
@@ -79,11 +90,11 @@ public class Person implements Serializable {
 	public void setFamily(Family family) {
 		this.family = family;
 	}
-	
+  
 	@Override
 	public String toString() {
 		return "Person [personId=" + personId + ", firstName=" + firstName + ", lastName=" + lastName + ", birthdate="
-				+ birthdate + ", gender=" + gender + ", family=" + family + "]";
-	}
+				+ birthdate + ", gender=" + gender + ", role=" + role + ", family=" + family + "]";
+	} 	 		
 		
 }

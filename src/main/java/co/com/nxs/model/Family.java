@@ -6,23 +6,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity
-public class Family implements Serializable {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-	private static final long serialVersionUID = 1L;
-	
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@Entity
+public class Family implements Serializable { 
+
+	private static final long serialVersionUID = 1L;	 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long familyId;		
-
 	private String familyName;		
+	private String residenceAddress;     
 
-	private String residenceAddress;  
-	
+	public Family() {
+		super();
+	}
+
 	public Long getFamilyId() {
 		return familyId;
 	}
- 
+
 	public void setFamilyId(Long familyId) {
 		this.familyId = familyId;
 	}
@@ -47,6 +51,6 @@ public class Family implements Serializable {
 	public String toString() {
 		return "Family [familyId=" + familyId + ", familyName=" + familyName + ", residenceAddress=" + residenceAddress
 				+ "]";
-	}		
+	}			
 	
 }

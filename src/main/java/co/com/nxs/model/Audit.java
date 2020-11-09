@@ -14,39 +14,16 @@ public class Audit implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)	
-	private Long auditId;
-	 
-	private String httpMethod;
-	
-	private Date startDate;
-	
-	private Date endDate;
-	 
-	private String input;
-	
-	private String output;
-	
-	private String httpResponse;
-	
-	private String exception;
-	
-	private String urlParameters;
+	private Long auditId;	 	
+	private Date startDate;	
+	private Date endDate;	 
+	private String input;	
+	private String output;	
+	private String responseCodeHttp;	
+	private String exception;		
 
 	public Audit() {
 		super();
-	}
-
-	public Audit(String httpMethod, Date startDate, Date endDate, String input, String output, String httpResponse,
-			String exception, String urlParameters) {
-		super();
-		this.httpMethod = httpMethod;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.input = input;
-		this.output = output;
-		this.httpResponse = httpResponse;
-		this.exception = exception;
-		this.urlParameters = urlParameters;
 	}
 
 	public Long getAuditId() {
@@ -55,14 +32,6 @@ public class Audit implements Serializable {
 
 	public void setAuditId(Long auditId) {
 		this.auditId = auditId;
-	}
-
-	public String getHttpMethod() {
-		return httpMethod;
-	}
-
-	public void setHttpMethod(String httpMethod) {
-		this.httpMethod = httpMethod;
 	}
 
 	public Date getStartDate() {
@@ -97,12 +66,12 @@ public class Audit implements Serializable {
 		this.output = output;
 	}
 
-	public String getHttpResponse() {
-		return httpResponse;
+	public String getResponseCodeHttp() {
+		return responseCodeHttp;
 	}
 
-	public void setHttpResponse(String httpResponse) {
-		this.httpResponse = httpResponse;
+	public void setResponseCodeHttp(String responseCodeHttp) {
+		this.responseCodeHttp = responseCodeHttp;
 	}
 
 	public String getException() {
@@ -113,21 +82,11 @@ public class Audit implements Serializable {
 		this.exception = exception;
 	}
 
-	public String getUrlParameters() {
-		return urlParameters;
-	}
-
-	public void setUrlParameters(String urlParameters) {
-		this.urlParameters = urlParameters;
-	}
-
 	@Override
 	public String toString() {
-		return "Audit [auditId=" + auditId + ", httpMethod=" + httpMethod + ", startDate=" + startDate + ", endDate="
-				+ endDate + ", input=" + input + ", output=" + output + ", httpResponse=" + httpResponse
-				+ ", exception=" + exception + ", urlParameters=" + urlParameters + "]";
-	}
-	
-	
+		return "Audit [auditId=" + auditId 
+				+ ", startDate=" + startDate + ", endDate=" + endDate + ", input=" + input + ", output=" + output
+				+ ", responseCodeHttp=" + responseCodeHttp + ", exception=" + exception + "]";
+	}		
 
 }

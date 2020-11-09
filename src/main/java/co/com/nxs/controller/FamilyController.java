@@ -1,9 +1,6 @@
 package co.com.nxs.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,78 +21,66 @@ import co.com.nxs.service.PersonService;
 public class FamilyController {
 
 	@Autowired
-	FamilyService familyService;	
-	
+	FamilyService familyService;		
 	@Autowired
-	PersonService personService;
-	
+	PersonService personService;	
 	@Autowired
 	AuditService auditService; 
 	
 	@RequestMapping(value = "/createFamily", method = RequestMethod.POST)
-    public ResponseEntity<Object> createFamily(@RequestBody FamilyDTO request) {	
+	public ResponseEntity<Object> createFamily(@RequestBody FamilyDTO familydto) {
 		Audit audit = new Audit();
-		audit.setHttpMethod("POST"); 
-		audit.setInput(request.toString());   
-		audit.setStartDate(new Date());
-		auditService.create(audit); 
-		try {
-		Family family = familyService.createFamily(request.getFamily());
-		for (Person person : request.getPersons()) {			
-			person.setFamily(family);
-			personService.create(person);   
-		}  
-		audit.setEndDate(new Date());  
-		audit.setHttpResponse("200");
-		audit.setOutput(family.toString());		
-		auditService.create(audit);
+		try {	 
+			auditService.startRecord(audit, familydto.toString());
+			familyService.createFamily(familydto);
+			auditService.endRecord(audit, familydto.toString());
 		}catch(Exception e) {
-			audit.setException(e.getMessage());
-			auditService.create(audit);
+			auditService.exceptionRecord(audit, e.getMessage());
 		}
-		return new ResponseEntity<Object>(request, HttpStatus.OK);	   	
-    } 
+		return new ResponseEntity<Object>(familydto, HttpStatus.OK);	   	
+	} 
 	 	 
 	@RequestMapping(value = "/family/{familyId}", method = RequestMethod.GET)
-    public ResponseEntity<Object> getFamily(@PathVariable Long familyId) {
+    public ResponseEntity<Object> getFamily(@PathVariable Long familyId) {		
+		List<Person> persons = null;
 		Audit audit = new Audit();
-		audit.setHttpMethod("GET"); 
-		audit.setInput(familyId.toString());   
-		audit.setStartDate(new Date());
-		auditService.create(audit); 
-		List<Person> persons = new ArrayList<>();		
-		for (Person person : personService.getAllPersons()) {
-			if( familyId == person.getFamily().getFamilyId() ) {
-				persons.add(person);
-			}
-		} 
-		audit.setEndDate(new Date());  
-		audit.setHttpResponse("200");
-		audit.setOutput(persons.toString());		
-		auditService.create(audit);
+		try {
+			auditService.startRecord(audit, familyId.toString());
+			persons = familyService.getFamily(familyId);
+			auditService.endRecord(audit, persons.toString());
+		}catch(Exception e) {
+			auditService.exceptionRecord(audit, e.getMessage());
+		}	
 		return new ResponseEntity<Object>(persons, HttpStatus.OK);			
     }  	
 	
 	@RequestMapping(value = "/updatefamily", method = RequestMethod.PUT)
-    public ResponseEntity<Object> updatefamily(@RequestBody FamilyDTO request ) {
-		Family fam = familyService.getFamilyById(request.getFamily().getFamilyId()).get();
-		fam.setFamilyName(request.getFamily().getFamilyName());
-		fam.setResidenceAddress(request.getFamily().getResidenceAddress());		
-		return new ResponseEntity<Object>(familyService.updateFamily(fam), HttpStatus.OK);			
-    }   
-	
+    public ResponseEntity<Object> updatefamily(@RequestBody FamilyDTO familydto ) {
+		Audit audit = new Audit();
+		Family fam = null;
+		try {
+			auditService.startRecord(audit, familydto.toString());
+			fam = familyService.updatefamily(familydto);	
+			auditService.endRecord(audit, familydto.toString());
+		}catch(Exception e) {
+			auditService.exceptionRecord(audit, e.getMessage());
+		}	
+		return new ResponseEntity<Object>(fam, HttpStatus.OK);			
+	}   
+
 	@RequestMapping(value = "/deletefamily/{familyId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> deleteFamily(@PathVariable Long familyId) {			
-		Optional<Family> family = familyService.getFamilyById(familyId);		
-		for (Person person : personService.getAllPersons()) {
-			if( familyId == person.getFamily().getFamilyId() ) {
-				personService.deletePerson(person);
-			}
+	public ResponseEntity<Object> deleteFamily(@PathVariable Long familyId) {			
+		Audit audit = new Audit(); 
+		try {
+			auditService.startRecord(audit, familyId.toString());
+			familyService.deleteFamily(familyId);
+			auditService.endRecord(audit, "Borrado Satisfactorio");
+		}catch(Exception e) {
+			auditService.exceptionRecord(audit, e.getMessage());
 		}
-		familyService.deleteFamily(family.get());
 		return new ResponseEntity<Object>("Borrado Satisfactorio", HttpStatus.OK);			
     }  		
-	
+	 
 }
 
 
